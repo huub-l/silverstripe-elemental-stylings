@@ -66,7 +66,7 @@ class StylingSize extends Extension
     {
         $size = $this->getOwner()->config()->get('size');
         if ($size && count($size) > 1) {
-            $fields->addFieldsToTab('Root.Styling',
+            $fields->addFieldToTab('Root.Styling',
                 DropdownField::create('Size', _t(self::class . '.SIZE', 'Size'), $size));
         } else {
             $fields->removeByName('Size');

@@ -67,7 +67,7 @@ class StylingVerticalAlign extends Extension
         $fields->removeByName('VerAlign');
         $veralign = $this->getOwner()->config()->get('veralign');
         if ($veralign && count($veralign) > 1) {
-            $fields->addFieldsToTab(
+            $fields->addFieldToTab(
                 'Root.Styling',
                 StylingOptionsetField::create('VerAlign', _t(self::class . '.VERTICALALIGN', 'Vertical Align'),
                     $veralign)

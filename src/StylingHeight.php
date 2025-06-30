@@ -66,7 +66,7 @@ class StylingHeight extends Extension
     {
         $height = $this->getOwner()->config()->get('height');
         if ($height && count($height) > 1) {
-            $fields->addFieldsToTab('Root.Styling',
+            $fields->addFieldToTab('Root.Styling',
                 StylingOptionsetField::create('Height', _t(self::class . '.HEIGHT', 'Height Size'), $height));
         } else {
             $fields->removeByName('Height');

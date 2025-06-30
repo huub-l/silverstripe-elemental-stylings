@@ -67,7 +67,7 @@ class StylingTextAlign extends Extension
         $fields->removeByName('TextAlign');
         $textalign = $this->getOwner()->config()->get('textalign');
         if ($textalign && count($textalign) > 1) {
-            $fields->addFieldsToTab(
+            $fields->addFieldToTab(
                 'Root.Styling',
                 StylingOptionsetField::create('TextAlign', _t(self::class.'.TEXTALIGN', 'Text Align'), $textalign)
             );

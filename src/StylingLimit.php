@@ -65,7 +65,7 @@ class StylingLimit extends Extension
     {
         $limit = $this->getOwner()->config()->get('limit');
         if ($limit && count($limit) > 1) {
-            $fields->addFieldsToTab('Root.Styling', DropdownField::create('Limit', _t(self::class.'.LIMIT', 'Limit'), $limit));
+            $fields->addFieldToTab('Root.Styling', DropdownField::create('Limit', _t(self::class.'.LIMIT', 'Limit'), $limit));
         } else {
             $fields->removeByName('Limit');
         }

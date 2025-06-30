@@ -66,7 +66,7 @@ class StylingWidth extends Extension
     {
         $width = $this->getOwner()->config()->get('width');
         if ($width && count($width) > 1) {
-            $fields->addFieldsToTab('Root.Styling',
+            $fields->addFieldToTab('Root.Styling',
                 StylingOptionsetField::create('Width', _t(self::class . '.WIDTH', 'Width Size'), $width));
         } else {
             $fields->removeByName('Width');

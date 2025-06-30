@@ -65,7 +65,7 @@ class StylingStyle extends Extension
     {
         $style = $this->getOwner()->config()->get('styles');
         if ($style && count($style) > 1) {
-            $fields->addFieldsToTab('Root.Styling',
+            $fields->addFieldToTab('Root.Styling',
                 DropdownField::create('Style', _t(self::class . '.STYLE', 'Style'), $style));
         } else {
             $fields->removeByName('Style');

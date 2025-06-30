@@ -67,7 +67,7 @@ class StylingHorizontalAlign extends Extension
         $fields->removeByName('HorAlign');
         $horalign = $this->getOwner()->config()->get('horalign');
         if ($horalign && count($horalign) > 1) {
-            $fields->addFieldsToTab(
+            $fields->addFieldToTab(
                 'Root.Styling',
                 StylingOptionsetField::create('HorAlign', _t(self::class . '.HORIZONTALALIGN', 'Horizontal Align'),
                     $horalign)
