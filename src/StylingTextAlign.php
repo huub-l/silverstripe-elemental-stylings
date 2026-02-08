@@ -3,84 +3,84 @@
 namespace Fractas\ElementalStylings;
 
 use Fractas\ElementalStylings\Forms\StylingOptionsetField;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\View\ArrayData;
+use SilverStripe\Model\ArrayData;
 
-class StylingTextAlign extends DataExtension
+
+class StylingTextAlign extends Extension
 {
-    private static $db = [
+    /**
+     * @config
+     */
+    private static array $db = [
         'TextAlign' => 'Varchar(255)',
     ];
 
     /**
      * @var string
+     * @config
      */
-    private static $singular_name = 'Text Align';
+    private static string $singular_name = 'Text Align';
 
     /**
      * @var string
+     * @config
      */
-    private static $plural_name = 'Text Aligns';
+    private static string $plural_name = 'Text Aligns';
 
     /**
      * @config
      *
      * @var array
      */
-    private static $textalign = [];
+    private static array $textalign = [];
 
-    public function getStylingTextAlignNice($key)
+    public function getStylingTextAlignNice(string $key):string
     {
-        return (!empty($this->owner->config()->get('textalign')[$key])) ? $this->owner->config()->get('textalign')[$key] : $key;
+        return (empty($this->getOwner()->config()->get('textalign')[$key])) ? $key : $this->getOwner()->config()->get('textalign')[$key];
     }
 
-    public function getStylingTextAlignData()
+    public function getStylingTextAlignData(): ArrayData
     {
         return ArrayData::create([
                'Label' => self::$singular_name,
-               'Value' => $this->getStylingTextAlignNice($this->owner->TextAlign),
+               'Value' => $this->getStylingTextAlignNice($this->getOwner()->TextAlign),
            ]);
     }
 
     /**
      * @return string
      */
-    public function getTextAlignVariant()
+    public function getTextAlignVariant(): string
     {
-        $textalign = $this->owner->TextAlign;
-        $textaligns = $this->owner->config()->get('textalign');
+        $textalign = $this->getOwner()->TextAlign;
+        $textaligns = $this->getOwner()->config()->get('textalign');
 
-        if (isset($textaligns[$textalign])) {
-            $textalign = strtolower($textalign);
-        } else {
-            $textalign = '';
-        }
+        $textalign = isset($textaligns[$textalign]) ? strtolower($textalign) : '';
 
         return 'textalign-'.$textalign;
     }
 
-    public function updateCMSFields(FieldList $fields)
+    public function updateCMSFields(FieldList $fields): FieldList
     {
         $fields->removeByName('TextAlign');
-        $textalign = $this->owner->config()->get('textalign');
+        $textalign = $this->getOwner()->config()->get('textalign');
         if ($textalign && count($textalign) > 1) {
-            $fields->addFieldsToTab(
+            $fields->addFieldToTab(
                 'Root.Styling',
-                StylingOptionsetField::create('TextAlign', _t(__CLASS__.'.TEXTALIGN', 'Text Align'), $textalign)
+                StylingOptionsetField::create('TextAlign', _t(self::class.'.TEXTALIGN', 'Text Align'), $textalign)
             );
         }
 
         return $fields;
     }
 
-    public function populateDefaults()
+    public function populateDefaults(): void
     {
-        $textalign = $this->owner->config()->get('textalign');
+        $textalign = $this->getOwner()->config()->get('textalign');
         $textalign = key($textalign);
 
-        $this->owner->TextAlign = $textalign;
-
-        parent::populateDefaults();
+        $this->getOwner()->TextAlign = $textalign;
     }
 }

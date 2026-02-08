@@ -3,84 +3,85 @@
 namespace Fractas\ElementalStylings;
 
 use Fractas\ElementalStylings\Forms\StylingOptionsetField;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\View\ArrayData;
+use SilverStripe\Model\ArrayData;
 
-class StylingHorizontalAlign extends DataExtension
+
+class StylingHorizontalAlign extends Extension
 {
-    private static $db = [
+    /**
+     * @config
+     */
+    private static array $db = [
         'HorAlign' => 'Varchar(255)',
     ];
 
     /**
      * @var string
+     * @config
      */
-    private static $singular_name = 'Horizontal Align';
+    private static string $singular_name = 'Horizontal Align';
 
     /**
      * @var string
+     * @config
      */
-    private static $plural_name = 'Horizontal Aligns';
+    private static string $plural_name = 'Horizontal Aligns';
 
     /**
      * @config
      *
      * @var array
      */
-    private static $horalign = [];
+    private static array $horalign = [];
 
-    public function getStylingHorizontalAlignNice($key)
+    public function getStylingHorizontalAlignNice(string $key): string
     {
-        return (!empty($this->owner->config()->get('horalign')[$key])) ? $this->owner->config()->get('horalign')[$key] : $key;
+        return (empty($this->getOwner()->config()->get('horalign')[$key])) ? $key : $this->getOwner()->config()->get('horalign')[$key];
     }
 
-    public function getStylingHorizontalAlignData()
+    public function getStylingHorizontalAlignData(): ArrayData
     {
         return ArrayData::create([
-               'Label' => self::$singular_name,
-               'Value' => $this->getStylingHorizontalAlignNice($this->owner->HorAlign),
-           ]);
+            'Label' => self::$singular_name,
+            'Value' => $this->getStylingHorizontalAlignNice($this->getOwner()->HorAlign),
+        ]);
     }
 
     /**
      * @return string
      */
-    public function getHorAlignVariant()
+    public function getHorAlignVariant(): string
     {
-        $horalign = $this->owner->HorAlign;
-        $horaligns = $this->owner->config()->get('horalign');
+        $horalign = $this->getOwner()->HorAlign;
+        $horaligns = $this->getOwner()->config()->get('horalign');
 
-        if (isset($horaligns[$horalign])) {
-            $horalign = strtolower($horalign);
-        } else {
-            $horalign = '';
-        }
+        $horalign = isset($horaligns[$horalign]) ? strtolower($horalign) : '';
 
-        return 'horalign-'.$horalign;
+        return 'horalign-' . $horalign;
     }
 
-    public function updateCMSFields(FieldList $fields)
+    public function updateCMSFields(FieldList $fields): FieldList
     {
         $fields->removeByName('HorAlign');
-        $horalign = $this->owner->config()->get('horalign');
+        $horalign = $this->getOwner()->config()->get('horalign');
         if ($horalign && count($horalign) > 1) {
-            $fields->addFieldsToTab(
+            $fields->addFieldToTab(
                 'Root.Styling',
-                StylingOptionsetField::create('HorAlign', _t(__CLASS__.'.HORIZONTALALIGN', 'Horizontal Align'), $horalign)
+                StylingOptionsetField::create('HorAlign', _t(self::class . '.HORIZONTALALIGN', 'Horizontal Align'),
+                    $horalign)
             );
         }
 
         return $fields;
     }
 
-    public function populateDefaults()
+    public function populateDefaults(): void
     {
-        $horalign = $this->owner->config()->get('horalign');
+        $horalign = $this->getOwner()->config()->get('horalign');
         $horalign = key($horalign);
 
-        $this->owner->HorAlign = $horalign;
-
-        parent::populateDefaults();
+        $this->getOwner()->HorAlign = $horalign;
     }
 }

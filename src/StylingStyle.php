@@ -2,71 +2,71 @@
 
 namespace Fractas\ElementalStylings;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\View\ArrayData;
+use SilverStripe\Model\ArrayData;
 
-class StylingStyle extends DataExtension
+
+class StylingStyle extends Extension
 {
     /**
      * @var string
+     * @config
      */
-    private static $singular_name = 'Style';
+    private static string $singular_name = 'Style';
 
     /**
      * @var string
+     * @config
      */
-    private static $plural_name = 'Styles';
+    private static string $plural_name = 'Styles';
 
     /**
      * @config
      *
      * @var array
      */
-    private static $style = [];
+    private static array $style = [];
 
-    public function getStylingStyleNice($key)
+    public function getStylingStyleNice(string $key): string
     {
-        return (!empty($this->owner->config()->get('styles')[$key])) ? $this->owner->config()->get('styles')[$key] : $key;
+        return (empty($this->getOwner()->config()->get('styles')[$key])) ? $key : $this->getOwner()->config()->get('styles')[$key];
     }
 
-    public function getStylingStyleData()
+    public function getStylingStyleData(): ArrayData
     {
         return ArrayData::create([
-               'Label' => self::$singular_name,
-               'Value' => $this->getStylingStyleNice($this->owner->Style),
-           ]);
+            'Label' => self::$singular_name,
+            'Value' => $this->getStylingStyleNice($this->getOwner()->Style),
+        ]);
     }
 
-    public function getStylingTitleData()
+    public function getStylingTitleData(): ArrayData
     {
         return ArrayData::create([
-               'Label' => 'Title',
-               'Value' => $this->owner->obj('ShowTitle')->Nice(),
-           ]);
+            'Label' => 'Title',
+            'Value' => $this->getOwner()->obj('ShowTitle')->Nice(),
+        ]);
     }
 
     /**
      * @return string
      */
-    public function updateStyleVariant(&$style)
+    public function updateStyleVariant(&$style): string
     {
-        if (isset($style)) {
-            $style = strtolower($style);
-        } else {
-            $style = '';
-        }
-        $style = 'style-'.$style;
+        $style = isset($style) ? strtolower((string)$style) : '';
+        $style = 'style-' . $style;
 
         return $style;
     }
 
-    public function updateCMSFields(FieldList $fields)
+    public function updateCMSFields(FieldList $fields): FieldList
     {
-        $style = $this->owner->config()->get('styles');
+        $style = $this->getOwner()->config()->get('styles');
         if ($style && count($style) > 1) {
-            $fields->addFieldsToTab('Root.Styling', DropdownField::create('Style', _t(__CLASS__.'.STYLE', 'Style'), $style));
+            $fields->addFieldToTab('Root.Styling',
+                DropdownField::create('Style', _t(self::class . '.STYLE', 'Style'), $style));
         } else {
             $fields->removeByName('Style');
         }
@@ -74,13 +74,11 @@ class StylingStyle extends DataExtension
         return $fields;
     }
 
-    public function populateDefaults()
+    public function populateDefaults(): void
     {
-        $style = $this->owner->config()->get('styles');
+        $style = $this->getOwner()->config()->get('styles');
         $style = array_key_first($style);
 
-        $this->owner->Style = $style;
-
-        parent::populateDefaults();
+        $this->getOwner()->Style = $style;
     }
 }
